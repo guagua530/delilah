@@ -50,14 +50,55 @@ const fireContainer = document.getElementById('fire-container');
 const modal = document.getElementById('modal');
 const confirmBtn = document.getElementById('confirm-btn');
 const bgm = document.getElementById('bgm');
+const loadingOverlay = document.getElementById('loading-overlay');
+const loadingProgress = document.getElementById('loading-progress');
 
 // 音乐加载状态
 let musicLoaded = false;
 
-// 预加载音乐
+// 监听音乐加载进度
+bgm.addEventListener('progress', () => {
+    if (bgm.buffered.length > 0) {
+        const bufferedEnd = bgm.buffered.end(bgm.buffered.length - 1);
+        const duration = bgm.duration;
+        if (duration > 0) {
+            const percent = Math.round((bufferedEnd / duration) * 100);
+            loadingProgress.textContent = percent + '%';
+        }
+    }
+});
+
+// 音乐可以播放时
+bgm.addEventListener('canplay', () => {
+    console.log('音乐可以开始播放');
+    loadingProgress.textContent = '准备完成';
+});
+
+// 音乐完全加载
 bgm.addEventListener('canplaythrough', () => {
     musicLoaded = true;
     console.log('音乐加载完成');
+    loadingProgress.textContent = '100%';
+
+    // 延迟隐藏加载界面
+    setTimeout(() => {
+        loadingOverlay.classList.add('fade-out');
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 500);
+    }, 500);
+});
+
+// 音乐加载错误处理
+bgm.addEventListener('error', (e) => {
+    console.error('音乐加载失败', e);
+    loadingProgress.textContent = '加载失败，点击任意处继续';
+    loadingOverlay.addEventListener('click', () => {
+        loadingOverlay.classList.add('fade-out');
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 500);
+    });
 });
 
 // 开始加载音乐

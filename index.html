@@ -58,11 +58,20 @@
         </div>
     </div>
     
+    <!-- 音频加载提示 -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">音乐加载中...</p>
+            <p class="loading-progress" id="loading-progress">0%</p>
+        </div>
+    </div>
+
     <!-- 音频 -->
-    <audio id="bgm" loop>
-        <source src="M800001jCcDw3oJcfj.mp3" type="audio/mpeg">
+    <audio id="bgm" loop preload="auto">
+        <source src="170389254.mp3" type="audio/mpeg">
     </audio>
-    
+
     <script src="script.js"></script>
 </body>
 </html>

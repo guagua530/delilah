@@ -77,6 +77,59 @@ body::after {
     display: none !important;
 }
 
+/* 音乐加载提示 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 39, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 0.5s ease;
+}
+
+.loading-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    color: #fff;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 20px;
+    font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.loading-progress {
+    font-size: 16px;
+    color: #aaa;
+    font-family: Arial, sans-serif;
+}
+
 /* 信件容器 */
 .letter-container {
     position: relative;
@@ -194,7 +247,8 @@ body::after {
     position: absolute;
     width: 900px;
     max-width: 90vw;
-    height: 750px;
+    height: auto;
+    min-height: 750px;
     max-height: 85vh;
     background:
         linear-gradient(to bottom,
@@ -905,9 +959,11 @@ body::after {
     .letter-paper {
         width: 90vw;
         max-width: 700px;
-        height: 650px;
-        max-height: 80vh;
+        height: auto;
+        min-height: 650px;
+        max-height: none;
         padding: 50px 40px 45px;
+        overflow-y: auto;
     }
 
     .letter-paper::after {
@@ -1011,9 +1067,11 @@ body::after {
     .letter-paper {
         width: 95vw;
         max-width: 550px;
-        height: 600px;
-        max-height: 75vh;
+        height: auto;
+        min-height: 80vh;
+        max-height: none;
         padding: 40px 30px 35px;
+        overflow-y: auto;
     }
 
     .letter-paper::after {
