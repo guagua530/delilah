@@ -55,6 +55,7 @@ const loadingProgress = document.getElementById('loading-progress');
 
 // 音乐加载状态
 let musicLoaded = false;
+let loadingCheckInterval = null;
 
 // 监听音乐加载进度
 bgm.addEventListener('progress', () => {
@@ -64,6 +65,14 @@ bgm.addEventListener('progress', () => {
         if (duration > 0) {
             const percent = Math.round((bufferedEnd / duration) * 100);
             loadingProgress.textContent = percent + '%';
+
+            // 当缓冲达到100%时，标记为加载完成
+            if (percent >= 100) {
+                musicLoaded = true;
+                console.log('音乐完全缓冲完成');
+                clearInterval(loadingCheckInterval);
+                hideLoadingScreen();
+            }
         }
     }
 });
@@ -71,28 +80,31 @@ bgm.addEventListener('progress', () => {
 // 音乐可以播放时
 bgm.addEventListener('canplay', () => {
     console.log('音乐可以开始播放');
-    loadingProgress.textContent = '准备完成';
 });
 
-// 音乐完全加载
+// 音乐完全加载（备用检测）
 bgm.addEventListener('canplaythrough', () => {
-    musicLoaded = true;
-    console.log('音乐加载完成');
-    loadingProgress.textContent = '100%';
+    console.log('canplaythrough 事件触发');
+});
 
-    // 延迟隐藏加载界面
+// 隐藏加载界面的函数
+function hideLoadingScreen() {
+    if (loadingOverlay.style.display === 'none') return;
+
+    loadingProgress.textContent = '100%';
     setTimeout(() => {
         loadingOverlay.classList.add('fade-out');
         setTimeout(() => {
             loadingOverlay.style.display = 'none';
         }, 500);
-    }, 500);
-});
+    }, 300);
+}
 
 // 音乐加载错误处理
 bgm.addEventListener('error', (e) => {
     console.error('音乐加载失败', e);
     loadingProgress.textContent = '加载失败，点击任意处继续';
+    clearInterval(loadingCheckInterval);
     loadingOverlay.addEventListener('click', () => {
         loadingOverlay.classList.add('fade-out');
         setTimeout(() => {
@@ -103,6 +115,22 @@ bgm.addEventListener('error', (e) => {
 
 // 开始加载音乐
 bgm.load();
+
+// 定时检查加载状态（防止事件不触发）
+loadingCheckInterval = setInterval(() => {
+    if (bgm.buffered.length > 0 && bgm.duration > 0) {
+        const bufferedEnd = bgm.buffered.end(bgm.buffered.length - 1);
+        const percent = Math.round((bufferedEnd / bgm.duration) * 100);
+
+        // 如果缓冲超过95%，认为加载完成
+        if (percent >= 95 && !musicLoaded) {
+            musicLoaded = true;
+            console.log('音乐缓冲达到95%，标记为加载完成');
+            clearInterval(loadingCheckInterval);
+            hideLoadingScreen();
+        }
+    }
+}, 200);
 
 // 点击信封打开信件
 envelope.addEventListener('click', () => {
@@ -192,32 +220,39 @@ function createStickyNote() {
     const dialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
     note.textContent = dialogue;
 
-    // 检测是否为移动端
-    const isMobile = window.innerWidth <= 768;
+    // 根据屏幕大小设置便签尺寸
+    const isMobile = window.innerWidth <= 480;
+    const isTablet = window.innerWidth <= 768 && window.innerWidth > 480;
+
+    let noteWidth = 280;  // 桌面端
+    let noteHeight = 140;
 
     if (isMobile) {
-        // 移动端：垂直排列，不需要设置位置
-        // CSS已经处理了居中和垂直排列
-        document.body.appendChild(note);
-    } else {
-        // 桌面端：随机位置（避免超出屏幕）
-        const maxX = window.innerWidth - 220;
-        const maxY = window.innerHeight - 170;
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
-
-        note.style.left = x + 'px';
-        note.style.top = y + 'px';
-
-        // 随机旋转角度
-        const rotation = (Math.random() - 0.5) * 20;
-        note.style.transform = `rotate(${rotation}deg)`;
-
-        document.body.appendChild(note);
-
-        // 使便签可拖动（仅桌面端）
-        makeDraggable(note);
+        noteWidth = 240;
+        noteHeight = 100;
+    } else if (isTablet) {
+        noteWidth = 260;
+        noteHeight = 120;
     }
+
+    // 随机位置（避免超出屏幕，留出边距）
+    const margin = 20;
+    const maxX = Math.max(margin, window.innerWidth - noteWidth - margin);
+    const maxY = Math.max(margin, window.innerHeight - noteHeight - margin);
+    const x = margin + Math.random() * (maxX - margin);
+    const y = margin + Math.random() * (maxY - margin);
+
+    note.style.left = x + 'px';
+    note.style.top = y + 'px';
+
+    // 随机旋转角度
+    const rotation = (Math.random() - 0.5) * 15;
+    note.style.transform = `rotate(${rotation}deg)`;
+
+    document.body.appendChild(note);
+
+    // 使便签可拖动
+    makeDraggable(note);
 }
 
 // 便签拖动功能

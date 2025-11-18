@@ -842,8 +842,8 @@ body::after {
 /* 便签样式 */
 .sticky-note {
     position: fixed;
-    width: 220px;
-    min-height: 160px;
+    width: 280px;
+    min-height: 140px;
     padding: 25px;
     background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
     box-shadow:
@@ -859,6 +859,8 @@ body::after {
     animation: stickyAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     font-family: 'KaiTi', '楷体', 'STKaiti', serif;
     word-wrap: break-word;
+    word-break: keep-all;
+    white-space: normal;
     border: 1px solid rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
@@ -1037,19 +1039,13 @@ body::after {
         font-size: 18px;
     }
 
-    /* 便签适配 - 平板端垂直排列 */
+    /* 便签适配 */
     .sticky-note {
-        width: 85%;
-        max-width: 400px;
-        min-height: 100px;
+        width: 260px;
+        min-height: 120px;
         padding: 20px;
-        font-size: 16px;
+        font-size: 15px;
         line-height: 1.7;
-        position: relative !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        margin: 15px auto;
-        display: block;
     }
 }
 
@@ -1129,19 +1125,12 @@ body::after {
         font-size: 16px;
     }
 
-    /* 便签适配 - 手机端垂直排列 */
     .sticky-note {
-        width: 90%;
-        max-width: 350px;
-        min-height: 90px;
+        width: 240px;
+        min-height: 100px;
         padding: 18px;
-        font-size: 15px;
+        font-size: 14px;
         line-height: 1.6;
-        position: relative !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        margin: 12px auto;
-        display: block;
     }
 }
 
