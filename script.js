@@ -56,6 +56,9 @@ const loadingProgress = document.getElementById('loading-progress');
 // 音乐加载状态
 let musicLoaded = false;
 let loadingCheckInterval = null;
+let loadingStartTime = Date.now();
+let lastPercent = 0;
+let stuckCount = 0;
 
 // 监听音乐加载进度
 bgm.addEventListener('progress', () => {
@@ -65,52 +68,54 @@ bgm.addEventListener('progress', () => {
         if (duration > 0) {
             const percent = Math.round((bufferedEnd / duration) * 100);
             loadingProgress.textContent = percent + '%';
-
-            // 当缓冲达到100%时，标记为加载完成
-            if (percent >= 100) {
-                musicLoaded = true;
-                console.log('音乐完全缓冲完成');
-                clearInterval(loadingCheckInterval);
-                hideLoadingScreen();
-            }
+            console.log(`音频缓冲进度: ${percent}%`);
         }
     }
 });
 
-// 音乐可以播放时
+// 音乐可以播放时（足够的数据可以开始播放）
 bgm.addEventListener('canplay', () => {
-    console.log('音乐可以开始播放');
+    console.log('音乐可以开始播放 (canplay)');
+    if (!musicLoaded) {
+        musicLoaded = true;
+        console.log('音乐已可播放，结束加载界面');
+        clearInterval(loadingCheckInterval);
+        hideLoadingScreen();
+    }
 });
 
 // 音乐完全加载（备用检测）
 bgm.addEventListener('canplaythrough', () => {
-    console.log('canplaythrough 事件触发');
+    console.log('音乐可以流畅播放 (canplaythrough)');
+    if (!musicLoaded) {
+        musicLoaded = true;
+        clearInterval(loadingCheckInterval);
+        hideLoadingScreen();
+    }
 });
 
 // 隐藏加载界面的函数
 function hideLoadingScreen() {
     if (loadingOverlay.style.display === 'none') return;
 
-    loadingProgress.textContent = '100%';
+    loadingProgress.textContent = '准备完成 ✓';
     setTimeout(() => {
         loadingOverlay.classList.add('fade-out');
         setTimeout(() => {
             loadingOverlay.style.display = 'none';
         }, 500);
-    }, 300);
+    }, 200);
 }
 
 // 音乐加载错误处理
 bgm.addEventListener('error', (e) => {
     console.error('音乐加载失败', e);
-    loadingProgress.textContent = '加载失败，点击任意处继续';
+    loadingProgress.textContent = '加载失败，点击继续';
+    musicLoaded = true; // 即使失败也允许继续
     clearInterval(loadingCheckInterval);
-    loadingOverlay.addEventListener('click', () => {
-        loadingOverlay.classList.add('fade-out');
-        setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-        }, 500);
-    });
+    setTimeout(() => {
+        hideLoadingScreen();
+    }, 1000);
 });
 
 // 开始加载音乐
@@ -118,17 +123,40 @@ bgm.load();
 
 // 定时检查加载状态（防止事件不触发）
 loadingCheckInterval = setInterval(() => {
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - loadingStartTime;
+
     if (bgm.buffered.length > 0 && bgm.duration > 0) {
         const bufferedEnd = bgm.buffered.end(bgm.buffered.length - 1);
         const percent = Math.round((bufferedEnd / bgm.duration) * 100);
 
-        // 如果缓冲超过95%，认为加载完成
-        if (percent >= 95 && !musicLoaded) {
+        // 检测是否卡住（进度不再增加）
+        if (percent === lastPercent) {
+            stuckCount++;
+        } else {
+            stuckCount = 0;
+            lastPercent = percent;
+        }
+
+        // 加载到50%就可以了，或者卡住了，或者超时3秒
+        if (!musicLoaded && (
+            percent >= 50 ||
+            (stuckCount >= 10 && percent >= 30) ||
+            elapsedTime > 3000
+        )) {
             musicLoaded = true;
-            console.log('音乐缓冲达到95%，标记为加载完成');
+            console.log(`音乐加载完成: ${percent}%, 耗时: ${elapsedTime}ms`);
             clearInterval(loadingCheckInterval);
             hideLoadingScreen();
         }
+    }
+
+    // 超时保护：5秒后强制完成
+    if (elapsedTime > 5000 && !musicLoaded) {
+        musicLoaded = true;
+        console.log('加载超时，强制完成');
+        clearInterval(loadingCheckInterval);
+        hideLoadingScreen();
     }
 }, 200);
 
