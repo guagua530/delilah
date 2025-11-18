@@ -142,32 +142,41 @@ confirmBtn.addEventListener('click', () => {
 function createStickyNote() {
     const note = document.createElement('div');
     note.className = 'sticky-note';
-    
+
     // 随机选择颜色
     const colorClass = `color${Math.floor(Math.random() * 6) + 1}`;
     note.classList.add(colorClass);
-    
+
     // 随机选择台词
     const dialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
     note.textContent = dialogue;
-    
-    // 随机位置（避免超出屏幕）
-    const maxX = window.innerWidth - 220;
-    const maxY = window.innerHeight - 170;
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
-    
-    note.style.left = x + 'px';
-    note.style.top = y + 'px';
-    
-    // 随机旋转角度
-    const rotation = (Math.random() - 0.5) * 20;
-    note.style.transform = `rotate(${rotation}deg)`;
-    
-    document.body.appendChild(note);
-    
-    // 使便签可拖动
-    makeDraggable(note);
+
+    // 检测是否为移动端
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        // 移动端：垂直排列，不需要设置位置
+        // CSS已经处理了居中和垂直排列
+        document.body.appendChild(note);
+    } else {
+        // 桌面端：随机位置（避免超出屏幕）
+        const maxX = window.innerWidth - 220;
+        const maxY = window.innerHeight - 170;
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+
+        note.style.left = x + 'px';
+        note.style.top = y + 'px';
+
+        // 随机旋转角度
+        const rotation = (Math.random() - 0.5) * 20;
+        note.style.transform = `rotate(${rotation}deg)`;
+
+        document.body.appendChild(note);
+
+        // 使便签可拖动（仅桌面端）
+        makeDraggable(note);
+    }
 }
 
 // 便签拖动功能

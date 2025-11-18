@@ -981,13 +981,19 @@ body::after {
         font-size: 18px;
     }
 
-    /* 便签适配 */
+    /* 便签适配 - 平板端垂直排列 */
     .sticky-note {
-        width: 180px;
-        min-height: 130px;
+        width: 85%;
+        max-width: 400px;
+        min-height: 100px;
         padding: 20px;
-        font-size: 15px;
-        line-height: 1.6;
+        font-size: 16px;
+        line-height: 1.7;
+        position: relative !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin: 15px auto;
+        display: block;
     }
 }
 
@@ -1065,11 +1071,19 @@ body::after {
         font-size: 16px;
     }
 
+    /* 便签适配 - 手机端垂直排列 */
     .sticky-note {
-        width: 150px;
-        min-height: 110px;
-        padding: 15px;
-        font-size: 14px;
+        width: 90%;
+        max-width: 350px;
+        min-height: 90px;
+        padding: 18px;
+        font-size: 15px;
+        line-height: 1.6;
+        position: relative !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin: 12px auto;
+        display: block;
     }
 }
 
