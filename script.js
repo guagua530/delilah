@@ -1,3 +1,19 @@
+// 信件内容
+const letterText = `致我的小黛:
+    当你拆开这封信时，夜色是不是刚刚好?月光是不是透过窗子，落在你的指尖?
+    如果是的话，那就说明，我又成功地偷走了一点时间，让自己以这样的方式回到你身边。
+    今天的海风依旧很急，浪花拍打着甲板，像是在催促我快些返航。
+    可我知道，真正等着我的人，在更远的地方。
+    在这个世界上，能让我真正心甘情愿回去的，只有你。
+    小黛，你有没有好好吃饭?有没有乖乖照顾自己?
+    你要答应我，不许再做那些让我心疼的事。
+    你要记得，神偷先生可是随时都会出现的--如果你不乖，我可是会直接把你偷走的，绑在身边，哪儿都不许去。
+    "小黛，等我。"
+    等我带着满天的星光，带着海风的味道，带着所有想念你的时光，回来拥抱你。`;
+
+// 信件落款
+const letterSignature = `—— 爱你的，阿奇`;
+
 // 台词数据
 const dialogues = [
     '神偷先生终于又出现在杀手小姐身边了',
@@ -24,23 +40,86 @@ const dialogues = [
 ];
 
 // 页面元素
+const letterContainer = document.getElementById('letter-container');
+const envelope = document.getElementById('envelope');
+const letterPaper = document.getElementById('letter-paper');
+const letterContent = document.getElementById('letter-content');
+const letterSignatureElement = document.getElementById('letter-signature');
+const continueBtn = document.getElementById('continue-btn');
 const fireContainer = document.getElementById('fire-container');
 const modal = document.getElementById('modal');
 const confirmBtn = document.getElementById('confirm-btn');
 const bgm = document.getElementById('bgm');
 
-// 火焰燃烧3秒后直接弹窗
-setTimeout(() => {
-    fireContainer.classList.add('hidden');
+// 音乐加载状态
+let musicLoaded = false;
 
-    // 播放音乐
-    bgm.play().catch(err => {
-        console.log('音频自动播放被阻止，需要用户交互');
-    });
+// 预加载音乐
+bgm.addEventListener('canplaythrough', () => {
+    musicLoaded = true;
+    console.log('音乐加载完成');
+});
 
-    // 弹出对话框
-    modal.classList.remove('hidden');
-}, 3000);
+// 开始加载音乐
+bgm.load();
+
+// 点击信封打开信件
+envelope.addEventListener('click', () => {
+    envelope.classList.add('open');
+
+    setTimeout(() => {
+        envelope.style.display = 'none';
+        letterPaper.classList.remove('hidden');
+
+        // 先显示落款
+        letterSignatureElement.textContent = letterSignature;
+
+        // 打字机效果显示信件内容（速度改为150ms，更慢更浪漫）
+        typeWriter(letterText, letterContent, 150, () => {
+            // 信件内容显示完毕，显示继续按钮
+            continueBtn.classList.remove('hidden');
+        });
+    }, 800);
+});
+
+// 打字机效果函数
+function typeWriter(text, element, speed, callback) {
+    let i = 0;
+    element.textContent = '';
+
+    function type() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        } else if (callback) {
+            callback();
+        }
+    }
+
+    type();
+}
+
+// 点击继续按钮，进入火焰场景
+continueBtn.addEventListener('click', () => {
+    letterContainer.classList.add('hidden');
+    fireContainer.classList.remove('hidden');
+
+    // 火焰燃烧3秒后直接弹窗
+    setTimeout(() => {
+        fireContainer.classList.add('hidden');
+
+        // 播放音乐（如果已加载）
+        if (musicLoaded) {
+            bgm.play().catch(err => {
+                console.log('音频自动播放被阻止，需要用户交互');
+            });
+        }
+
+        // 弹出对话框
+        modal.classList.remove('hidden');
+    }, 3000);
+});
 
 // 点击确定按钮
 confirmBtn.addEventListener('click', () => {

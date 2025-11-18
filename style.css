@@ -6,10 +6,7 @@
 
 body {
     min-height: 100vh;
-    background:
-        radial-gradient(ellipse at top, rgba(20, 24, 82, 0.5) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom, rgba(41, 20, 56, 0.8) 0%, transparent 50%),
-        linear-gradient(to bottom, #0a0e27 0%, #1a1033 50%, #0d0221 100%);
+    background: linear-gradient(to bottom, #0a0e27 0%, #1a0f2e 50%, #0d0221 100%);
     overflow: hidden;
     font-family: 'Georgia', serif;
     display: flex;
@@ -18,6 +15,7 @@ body {
     position: relative;
 }
 
+/* 星空背景层 */
 body::before {
     content: '';
     position: fixed;
@@ -25,21 +23,303 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background:
-        radial-gradient(circle at 20% 80%, rgba(138, 43, 226, 0.08) 0%, transparent 25%),
-        radial-gradient(circle at 80% 20%, rgba(255, 105, 180, 0.06) 0%, transparent 25%),
-        radial-gradient(circle at 50% 50%, rgba(255, 182, 193, 0.04) 0%, transparent 40%);
+    background-image:
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 80%, white, transparent),
+        radial-gradient(1px 1px at 15% 60%, white, transparent);
+    background-size: 200% 200%, 200% 200%, 300% 300%, 250% 250%, 200% 200%, 280% 280%, 220% 220%;
+    background-position: 0% 0%, 40% 40%, 50% 50%, 80% 10%, 0% 50%, 60% 70%, 90% 40%;
+    animation: twinkle 3s ease-in-out infinite;
     pointer-events: none;
-    animation: ambientGlow 10s ease-in-out infinite alternate;
+    opacity: 0.8;
 }
 
-@keyframes ambientGlow {
-    0% { opacity: 0.6; }
-    100% { opacity: 1; }
+/* 更多星星层 */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 70% 80%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 40% 40%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 85% 30%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 25% 90%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 95% 70%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 55% 15%, rgba(255, 255, 255, 0.8), transparent);
+    background-size: 250% 250%, 280% 280%, 200% 200%, 220% 220%, 300% 300%, 240% 240%, 260% 260%;
+    background-position: 10% 20%, 70% 80%, 40% 40%, 85% 30%, 25% 90%, 95% 70%, 55% 15%;
+    animation: twinkle 4s ease-in-out infinite reverse;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* 星星闪烁动画 */
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
 }
 
 .hidden {
     display: none !important;
+}
+
+/* 信件容器 */
+.letter-container {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 信封样式 */
+.envelope {
+    position: relative;
+    width: 350px;
+    height: 220px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    animation: envelopeFloat 3s ease-in-out infinite;
+}
+
+@keyframes envelopeFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+.envelope:hover {
+    transform: translateY(-10px) scale(1.05) !important;
+}
+
+.envelope-body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f5e6d3 0%, #e8d4b8 100%);
+    border-radius: 5px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 0 50px rgba(255, 255, 255, 0.3);
+    border: 2px solid #d4b896;
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e8d4b8 0%, #d4b896 100%);
+    clip-path: polygon(0 0, 50% 45%, 100% 0);
+    border-radius: 5px 5px 0 0;
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        inset 0 -10px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: top center;
+    z-index: 2;
+}
+
+.envelope.open .envelope-flap {
+    transform: rotateX(180deg);
+}
+
+.envelope-seal {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, #ff69b4 0%, #ff1493 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    box-shadow:
+        0 5px 20px rgba(255, 20, 147, 0.5),
+        inset 0 -2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    animation: sealGlow 2s ease-in-out infinite;
+}
+
+@keyframes sealGlow {
+    0%, 100% {
+        box-shadow:
+            0 5px 20px rgba(255, 20, 147, 0.5),
+            0 0 30px rgba(255, 105, 180, 0.3),
+            inset 0 -2px 10px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        box-shadow:
+            0 5px 30px rgba(255, 20, 147, 0.8),
+            0 0 50px rgba(255, 105, 180, 0.6),
+            inset 0 -2px 10px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.envelope-text {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #8b6f47;
+    font-size: 20px;
+    font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* 信纸样式 */
+.letter-paper {
+    position: absolute;
+    width: 900px;
+    max-width: 90vw;
+    height: 750px;
+    max-height: 85vh;
+    background:
+        linear-gradient(to bottom,
+            #fffaf0 0%,
+            #faf0e6 100%);
+    padding: 70px 80px 60px;
+    border-radius: 15px;
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.5),
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        inset 0 0 100px rgba(139, 111, 71, 0.08);
+    border: 2px solid #d4b896;
+    animation: letterUnfold 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transform-origin: top center;
+    position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* 信纸装饰边框 */
+.letter-paper::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    border: 1px solid rgba(139, 111, 71, 0.2);
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+/* 信纸顶部装饰 */
+.letter-paper::after {
+    content: '✿ ❀ ✿';
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #d4a574;
+    font-size: 24px;
+    letter-spacing: 20px;
+    opacity: 0.6;
+}
+
+@keyframes letterUnfold {
+    0% {
+        opacity: 0;
+        transform: scaleY(0) translateY(-100px);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleY(1) translateY(0);
+    }
+}
+
+.letter-content {
+    color: #2c2416;
+    font-size: 17px;
+    line-height: 2.0;
+    font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+    white-space: pre-wrap;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+.letter-signature {
+    color: #5d4e37;
+    font-size: 20px;
+    font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+    text-align: right;
+    margin-top: 30px;
+    letter-spacing: 3px;
+    font-style: italic;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.continue-btn {
+    display: block;
+    margin: 30px auto 0;
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+    color: white;
+    border: none;
+    padding: 15px 50px;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+    letter-spacing: 3px;
+    box-shadow:
+        0 10px 30px rgba(255, 105, 180, 0.5),
+        0 0 40px rgba(255, 20, 147, 0.3);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: btnAppear 0.8s ease-out forwards;
+    flex-shrink: 0;
+}
+
+@keyframes btnAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.continue-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow:
+        0 15px 40px rgba(255, 105, 180, 0.7),
+        0 0 60px rgba(255, 20, 147, 0.5);
+}
+
+.continue-btn:active {
+    transform: translateY(-2px) scale(1.02);
 }
 
 /* 星空背景 */
@@ -600,5 +880,196 @@ body::before {
 .sticky-note.color6 {
     background: linear-gradient(135deg, #ffccbc 0%, #ef9a9a 100%);
     color: #b71c1c;
+}
+
+/* 响应式设计 - 手机端适配 */
+@media (max-width: 768px) {
+    /* 信封适配 */
+    .envelope {
+        width: 280px;
+        height: 180px;
+    }
+
+    .envelope-text {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+
+    .envelope-seal {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+
+    /* 信纸适配 */
+    .letter-paper {
+        width: 90vw;
+        max-width: 700px;
+        height: 650px;
+        max-height: 80vh;
+        padding: 50px 40px 45px;
+    }
+
+    .letter-paper::after {
+        font-size: 20px;
+        letter-spacing: 15px;
+    }
+
+    .letter-content {
+        font-size: 15px;
+        line-height: 1.9;
+        letter-spacing: 1.2px;
+    }
+
+    .letter-signature {
+        font-size: 19px;
+        letter-spacing: 2px;
+    }
+
+    .continue-btn {
+        padding: 12px 40px;
+        font-size: 16px;
+    }
+
+    /* 火焰适配 */
+    .fire {
+        width: 300px;
+        height: 300px;
+    }
+
+    .fire-main {
+        width: 120px;
+        height: 250px;
+    }
+
+    .fire-main:nth-child(2) {
+        width: 150px;
+        height: 280px;
+    }
+
+    .fire-main:nth-child(3) {
+        width: 100px;
+        height: 220px;
+    }
+
+    .fire-glow {
+        width: 400px;
+        height: 300px;
+    }
+
+    /* 弹窗适配 */
+    .modal-content {
+        padding: 40px 30px;
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .modal-content h2 {
+        font-size: 28px;
+        letter-spacing: 3px;
+        margin-bottom: 25px;
+    }
+
+    .modal-content p {
+        font-size: 18px;
+        line-height: 1.8;
+        margin-bottom: 35px;
+    }
+
+    #confirm-btn {
+        padding: 15px 45px;
+        font-size: 18px;
+    }
+
+    /* 便签适配 */
+    .sticky-note {
+        width: 180px;
+        min-height: 130px;
+        padding: 20px;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 超小屏幕适配 */
+    .envelope {
+        width: 240px;
+        height: 150px;
+    }
+
+    .envelope-text {
+        font-size: 14px;
+    }
+
+    .letter-paper {
+        width: 95vw;
+        max-width: 550px;
+        height: 600px;
+        max-height: 75vh;
+        padding: 40px 30px 35px;
+    }
+
+    .letter-paper::after {
+        font-size: 18px;
+        letter-spacing: 10px;
+        top: 30px;
+    }
+
+    .letter-content {
+        font-size: 14px;
+        line-height: 1.8;
+        letter-spacing: 1px;
+    }
+
+    .letter-signature {
+        font-size: 17px;
+        letter-spacing: 2px;
+    }
+
+    .fire {
+        width: 250px;
+        height: 250px;
+    }
+
+    .fire-main {
+        width: 100px;
+        height: 200px;
+    }
+
+    .fire-main:nth-child(2) {
+        width: 120px;
+        height: 220px;
+    }
+
+    .fire-main:nth-child(3) {
+        width: 80px;
+        height: 180px;
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+    }
+
+    .modal-content h2 {
+        font-size: 24px;
+        letter-spacing: 2px;
+    }
+
+    .modal-content p {
+        font-size: 16px;
+    }
+
+    #confirm-btn {
+        padding: 12px 35px;
+        font-size: 16px;
+    }
+
+    .sticky-note {
+        width: 150px;
+        min-height: 110px;
+        padding: 15px;
+        font-size: 14px;
+    }
 }
 
