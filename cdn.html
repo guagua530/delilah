@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>致黛利拉小姐</title>
+    <!-- 直接从CDN加载CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/guagua530/delilah@main/style.css">
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+    <!-- 信件容器 -->
+    <div id="letter-container" class="letter-container">
+        <div class="envelope" id="envelope">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+            <div class="envelope-seal">💌</div>
+            <div class="envelope-text">致 黛利拉小姐</div>
+        </div>
+        <div class="letter-paper hidden" id="letter-paper">
+            <div class="letter-content" id="letter-content"></div>
+            <div class="letter-signature" id="letter-signature"></div>
+            <button class="continue-btn hidden" id="continue-btn">继续 ❤</button>
+        </div>
+    </div>
+
+    <!-- 火焰容器 -->
+    <div id="fire-container" class="fire-container hidden">
+        <div class="fire">
+            <div class="fire-center">
+                <div class="fire-main"></div>
+                <div class="fire-main"></div>
+                <div class="fire-main"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+        </div>
+        <div class="fire-glow"></div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>黛利拉小姐</h2>
+            <p>今晚月色正好，能允许我跟你一起作伴吗？</p>
+            <button id="confirm-btn">确定</button>
+        </div>
+    </div>
+
+    <!-- 音频加载提示 -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">音乐加载中...</p>
+            <p class="loading-progress" id="loading-progress">0%</p>
+        </div>
+    </div>
+
+    <!-- 音频 - 使用CDN -->
+    <audio id="bgm" loop preload="auto">
+        <source src="https://cdn.jsdelivr.net/gh/guagua530/delilah@main/170389254.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 直接从CDN加载JS -->
+    <script src="https://cdn.jsdelivr.net/gh/guagua530/delilah@main/script.js"></script>
+</body>
+</html>
+
