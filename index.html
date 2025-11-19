@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>致黛利拉小姐</title>
+    <!-- 使用CDN加速CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/guagua530/delilah@main/style.css">
+    <!-- 备用：本地CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -74,7 +77,15 @@
         <source src="170389254.mp3" type="audio/mpeg">
     </audio>
 
-    <script src="script.js"></script>
+    <!-- 使用CDN加速JS -->
+    <script src="https://cdn.jsdelivr.net/gh/guagua530/delilah@main/script.js"></script>
+    <!-- 备用：本地JS -->
+    <script>
+        // 如果CDN加载失败，加载本地文件
+        if (typeof letterContent === 'undefined') {
+            document.write('<script src="script.js"><\/script>');
+        }
+    </script>
 </body>
 </html>
 
